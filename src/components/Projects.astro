@@ -1,0 +1,227 @@
+---
+import { siteConfig } from "../config";
+const hasProjectCategories = siteConfig.projectCategories && siteConfig.projectCategories.length > 0;
+---
+
+{
+  hasProjectCategories && (
+    <section id="projects" class="p-8 sm:p-12 md:p-16 lg:p-24">
+      <div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
+          <div class="lg:col-span-4">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl xl:text-7xl font-bold text-gray-900">
+              Other Things I've Done
+            </h2>
+            <div
+              class="w-[75px] h-[5px] mt-2 md:mt-4 lg:mt-8 rounded-full"
+              style={`background-color: ${siteConfig.accentColor}`}
+            />
+          </div>
+
+          <div class="lg:col-span-8">
+            <div class="flex flex-col md:flex-row">
+              {/* Tab List */}
+              <div class="relative mb-8 md:mb-0 md:mr-8">
+                <div class="flex md:flex-col overflow-x-auto md:overflow-x-visible">
+                  {siteConfig.projectCategories.map((category, index) => (
+                    <button
+                      id={`tab-${index}`}
+                      class="tab-button px-4 py-2 md:px-6 md:py-3 text-left whitespace-nowrap md:whitespace-normal border-l-2 md:border-l-2 md:border-b-0 border-gray-300 transition-all duration-200 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 cursor-pointer"
+                      data-tab={index}
+                      style={`border-left-color: ${index === 0 ? siteConfig.accentColor : '#d1d5db'}; color: ${index === 0 ? siteConfig.accentColor : ''};`}
+                    >
+                      {category.name}
+                    </button>
+                  ))}
+                  {/* Active tab indicator */}
+                  <div 
+                    id="tab-indicator"
+                    class="hidden md:block absolute left-0 w-0.5 h-12 transition-all duration-200"
+                    style={`background-color: ${siteConfig.accentColor}; transform: translateY(0px);`}
+                  ></div>
+                </div>
+              </div>
+
+              {/* Tab Panels */}
+              <div class="flex-1">
+                {siteConfig.projectCategories.map((category, categoryIndex) => (
+                  <div
+                    id={`panel-${categoryIndex}`}
+                    class={`tab-panel ${categoryIndex === 0 ? 'block' : 'hidden'}`}
+                    data-panel={categoryIndex}
+                  >
+                    <div class="space-y-6">
+                      {category.projects.map((project, projectIndex) => {
+                        const Component = project.link ? "a" : "div";
+                        const linkProps = project.link
+                          ? {
+                              href: project.link,
+                              target: "_blank",
+                              rel: "noopener noreferrer",
+                            }
+                          : {};
+
+                        return (
+                          <div class="group relative">
+                            <Component
+                              {...linkProps}
+                              class={`block relative p-4 sm:p-6 md:p-8 bg-gray-50 rounded-xl sm:rounded-2xl border border-gray-200 transition-all duration-300 hover:bg-white hover:shadow-xl hover:border-gray-300 hover:-translate-y-1`}
+                            >
+                              {project.link && (
+                                <div class="absolute top-4 right-4 sm:top-6 sm:right-6 md:top-8 md:right-8 w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 flex items-center justify-center rounded-full transition-all duration-300 group-hover:opacity-90" style="background: var(--accent-color);">
+                                  <svg
+                                    class="w-4 h-4 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 dark:text-white"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M10 6h8M18 6v8" />
+                                  </svg>
+                                </div>
+                              )}
+
+                              <div class="space-y-4">
+                                <div>
+                                  <span
+                                    class="text-sm font-mono"
+                                    style={{ color: siteConfig.accentColor }}
+                                  >
+                                    {project.organization || `0${projectIndex + 1}`}
+                                  </span>
+                                  <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mt-1">
+                                    {project.name}
+                                  </h3>
+                                  {project.dateRange && (
+                                    <span class="text-xs sm:text-sm text-gray-500 mt-0">
+                                      {project.dateRange}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {project.bullets && project.bullets.length > 0 ? (
+                                  <ul class="space-y-1">
+                                    {project.bullets.map((bullet) => (
+                                      <li class="flex items-start">
+                                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-gray-400 mt-2 mr-3 flex-shrink-0" />
+                                        <span class="text-sm sm:text-base text-gray-600">{bullet}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                ) : (
+                                  <p
+                                    class={`text-base sm:text-lg text-gray-600 leading-relaxed ${
+                                      project.link ? "pr-12 sm:pr-14 md:pr-16" : ""
+                                    }`}
+                                  >
+                                    {project.description}
+                                  </p>
+                                )}
+
+                                {project.skills && project.skills.length > 0 && (
+                                  <div class="flex flex-wrap gap-1.5 sm:gap-2 pt-2">
+                                    {project.skills.map((skill) => (
+                                      <span
+                                        class={`skill-chip px-3 sm:px-3.5 py-1 sm:py-1.5 bg-gray-100 text-gray-800 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 hover:bg-gray-200`}
+                                      >
+                                        {skill}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </Component>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  // Tab functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+    const tabIndicator = document.getElementById('tab-indicator');
+    const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color') || '#1d4ed8';
+
+    function setActiveTab(tabIndex) {
+      // Update tab buttons
+      tabButtons.forEach((button, index) => {
+        const isActive = index === tabIndex;
+        button.style.borderLeftColor = isActive ? accentColor : '#d1d5db';
+        button.style.color = isActive ? accentColor : '#6b7280';
+      });
+
+      // Update tab panels
+      tabPanels.forEach((panel, index) => {
+        panel.classList.toggle('block', index === tabIndex);
+        panel.classList.toggle('hidden', index !== tabIndex);
+      });
+
+      // Update indicator position
+      if (tabIndicator && window.innerWidth >= 768) {
+        const activeButton = tabButtons[tabIndex];
+        const buttonHeight = activeButton.offsetHeight;
+        tabIndicator.style.transform = `translateY(${tabIndex * buttonHeight}px)`;
+      }
+    }
+
+    // Add click handlers
+    tabButtons.forEach((button, index) => {
+      button.addEventListener('click', () => setActiveTab(index));
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      const activeTab = Array.from(tabButtons).findIndex(button => 
+        button.style.borderLeftColor === accentColor || 
+        button.style.color === accentColor
+      );
+      if (activeTab !== -1) {
+        setActiveTab(activeTab);
+      }
+    });
+  });
+</script>
+
+<style>
+  /* Smooth transitions for tab panels */
+  .tab-panel {
+    transition: opacity 0.2s ease-in-out;
+  }
+  
+  .tab-panel.hidden {
+    opacity: 0;
+  }
+  
+  .tab-panel.block {
+    opacity: 1;
+  }
+
+  /* Custom scrollbar for mobile tab list */
+  .overflow-x-auto::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 2px;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+</style>
